@@ -25,7 +25,7 @@ const ICON = {
 function normalize(w) {
   return {
     id: String(w.id || uid()),
-    name: String(w.name || 'Treino').slice(0, 40),
+    name: String(w.name || 'GymApp').slice(0, 40),
     fav: !!w.fav,
     hue: Number.isFinite(+w.hue) ? +w.hue : 150,
     exercises: (Array.isArray(w.exercises) ? w.exercises : []).map(e => ({

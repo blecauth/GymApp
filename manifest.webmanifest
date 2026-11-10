@@ -1,6 +1,6 @@
 {
-  "name": "Treino",
-  "short_name": "Treino",
+  "name": "GymApp",
+  "short_name": "GymApp",
   "description": "Organize seus treinos de academia. Funciona offline.",
   "lang": "pt-BR",
   "start_url": "./index.html",

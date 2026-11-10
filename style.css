@@ -156,7 +156,7 @@ section + section { margin-top: 22px; }
 .ex.done .ex-meta { opacity: .55; }
 .no-ex { margin: 12px 0 2px; font-size: 14px; color: var(--muted); }
 
-.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.card-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 6px; }
 .link-btn { padding: 8px 2px; font-size: 14px; font-weight: 600; color: var(--c); }
 .link-btn.muted { color: var(--muted); }
 

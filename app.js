@@ -3,7 +3,6 @@
 /* ============ Utilidades ============ */
 const KEY = 'treinos.v1';
 const HUES = [150, 200, 260, 300, 350, 20, 60, 100];
-const LIMIT = 4; // exercícios visíveis antes de "ver mais"
 
 const $ = (s, r = document) => r.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
@@ -93,7 +92,6 @@ const settings = Object.assign(
   (() => { try { return JSON.parse(localStorage.getItem(SKEY)) || {}; } catch { return {}; } })()
 );
 const saveSettings = () => { try { localStorage.setItem(SKEY, JSON.stringify(settings)); } catch {} };
-const expanded = new Set();
 
 /* ============ Elementos ============ */
 const app = $('#app');
@@ -113,8 +111,7 @@ function cardHTML(w) {
   const total = w.exercises.length;
   const done = w.exercises.filter(e => e.done).length;
   const sets = w.exercises.reduce((a, e) => a + (+e.sets || 0), 0);
-  const open = expanded.has(w.id);
-  const shown = open ? w.exercises : w.exercises.slice(0, LIMIT);
+  const shown = w.exercises;
   const pct = total ? Math.round(done / total * 100) : 0;
 
   const rows = shown.map(e => `
@@ -128,9 +125,6 @@ function cardHTML(w) {
     ? `<div class="progress" aria-hidden="true"><i style="--p:${pct}"></i></div><ul class="ex-list">${rows}</ul>`
     : `<p class="no-ex">Nenhum exercício ainda. Toque em editar para adicionar.</p>`;
 
-  const more = total > LIMIT
-    ? `<button class="link-btn muted" data-act="expand">${open ? 'Mostrar menos' : `+${total - LIMIT} exercício${total - LIMIT > 1 ? 's' : ''}`}</button>`
-    : '<span></span>';
   const reset = done
     ? `<button class="link-btn" data-act="reset">${done === total ? 'Concluído ✓ Reiniciar' : 'Limpar marcações'}</button>`
     : '';
@@ -147,7 +141,7 @@ function cardHTML(w) {
       <button class="mini-btn edit-btn" data-act="edit" aria-label="Editar ${esc(w.name)}">${ICON.edit}</button>
     </div>
     ${body}
-    <div class="card-foot">${more}${reset}</div>
+    ${reset ? `<div class="card-foot">${reset}</div>` : ''}
   </article>`;
 }
 
@@ -201,10 +195,6 @@ app.addEventListener('click', e => {
       }
       break;
     }
-    case 'expand':
-      expanded.has(w.id) ? expanded.delete(w.id) : expanded.add(w.id);
-      updateCard(w);
-      break;
     case 'reset':
       w.exercises.forEach(x => x.done = false); save(); updateCard(w);
       break;

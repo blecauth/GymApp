@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Treino">
+<meta name="description" content="Organize seus treinos de academia. Funciona offline.">
+<title>Treino</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <p class="eyebrow" id="hoje"></p>
+    <h1>Meus treinos</h1>
+  </div>
+  <div class="top-actions">
+    <button id="btnReorder" class="icon-btn" aria-label="Reordenar treinos" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg>
+    </button>
+    <button id="btnMenu" class="icon-btn" aria-label="Mais opções">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+    </button>
+  </div>
+</header>
+
+<p id="hint" class="hint" hidden>Arraste pelo ícone <b>≡</b> para mudar a ordem. Toque no botão de novo para concluir.</p>
+
+<main id="app">
+  <section id="secFeatured" hidden>
+    <h2 class="sec-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8L3.5 9.7l5.9-.9z"/></svg> Em destaque</h2>
+    <div id="listFeatured" class="list"></div>
+  </section>
+
+  <section id="secAll" hidden>
+    <h2 id="titleAll" class="sec-title" hidden>Todos os treinos</h2>
+    <div id="listAll" class="list"></div>
+  </section>
+
+  <div id="empty" class="empty" hidden>
+    <div class="empty-icon">🏋️</div>
+    <h2>Nenhum treino ainda</h2>
+    <p>Crie seu primeiro treino e monte a lista de exercícios, séries e repetições.</p>
+    <button id="btnFirst" class="btn primary">Criar treino</button>
+  </div>
+</main>
+
+<button id="fab" class="fab" aria-label="Novo treino">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+  Novo treino
+</button>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden>
+  <span id="toastMsg"></span>
+  <button id="toastAct" type="button" hidden></button>
+</div>
+
+<!-- Editor -->
+<dialog id="editor" aria-labelledby="edTitle">
+  <form id="edForm" autocomplete="off">
+    <header class="sheet-head">
+      <h2 id="edTitle">Novo treino</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Fechar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="sheet-body">
+      <label class="field">
+        <span class="label">Nome do treino</span>
+        <input id="edName" maxlength="40" placeholder="Ex.: Treino A — Peito e tríceps" enterkeyhint="done">
+      </label>
+
+      <div class="field">
+        <span class="label">Cor</span>
+        <div id="edHues" class="hues" role="radiogroup" aria-label="Cor do treino"></div>
+      </div>
+
+      <div class="field">
+        <span class="label">Exercícios</span>
+        <div class="ex-head" aria-hidden="true"><span>Exercício</span><span>Séries</span><span>Reps</span><span></span></div>
+        <div id="edRows" class="ed-rows"></div>
+        <button type="button" id="edAdd" class="btn ghost">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar exercício
+        </button>
+      </div>
+    </div>
+    <footer class="sheet-foot">
+      <button type="button" id="edDelete" class="btn danger">Excluir</button>
+      <button type="submit" class="btn primary">Salvar</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- Menu -->
+<dialog id="menu" aria-labelledby="menuTitle">
+  <div class="sheet-head">
+    <h2 id="menuTitle">Opções</h2>
+    <button type="button" class="icon-btn" data-close aria-label="Fechar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="sheet-body menu-list">
+    <button type="button" id="mnReset" class="menu-item">
+      <b>Limpar marcações</b>
+      <small>Desmarca todos os exercícios concluídos</small>
+    </button>
+    <button type="button" id="mnExport" class="menu-item">
+      <b>Exportar backup</b>
+      <small>Salva seus treinos em um arquivo .json</small>
+    </button>
+    <label class="menu-item" for="mnFile">
+      <b>Importar backup</b>
+      <small>Substitui os treinos atuais por um arquivo .json</small>
+    </label>
+    <input id="mnFile" type="file" accept="application/json,.json" hidden>
+    <p class="fine">Seus dados ficam apenas neste aparelho (armazenamento local do navegador). Faça backup de vez em quando.</p>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>

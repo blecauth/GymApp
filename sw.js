@@ -1,4 +1,4 @@
-const CACHE = 'treino-v1';
+const CACHE = 'treino-v2';
 const ASSETS = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', e => {

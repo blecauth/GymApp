@@ -26,6 +26,9 @@
     <button id="btnReorder" class="icon-btn" aria-label="Reordenar treinos" aria-pressed="false">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg>
     </button>
+    <button id="btnRest" class="icon-btn" aria-label="Timer de descanso" aria-pressed="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 1.5M9.5 3h5"/></svg>
+    </button>
     <button id="btnMenu" class="icon-btn" aria-label="Mais opções">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
     </button>
@@ -63,6 +66,31 @@
   <button id="toastAct" type="button" hidden></button>
 </div>
 
+<!-- Timer de descanso -->
+<section id="rest" class="rest" data-state="idle" aria-label="Timer de descanso" hidden>
+  <div class="rest-top">
+    <div class="rest-info">
+      <span id="restLabel" class="rest-label" aria-live="polite">Descanso</span>
+      <div id="restTime" class="rest-time" role="timer">01:30</div>
+    </div>
+    <div class="rest-adj">
+      <button type="button" class="mini-btn" data-add="-15" aria-label="Menos 15 segundos">−15s</button>
+      <button type="button" class="mini-btn" data-add="15" aria-label="Mais 15 segundos">+15s</button>
+    </div>
+    <button type="button" id="restClose" class="mini-btn" aria-label="Parar e fechar o timer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="rest-bar" aria-hidden="true"><i id="restBar"></i></div>
+  <div class="rest-presets" role="group" aria-label="Duração do descanso">
+    <button type="button" class="chip" data-s="30" aria-pressed="false">30s</button>
+    <button type="button" class="chip" data-s="60" aria-pressed="false">1 min</button>
+    <button type="button" class="chip" data-s="90" aria-pressed="false">1:30</button>
+    <button type="button" class="chip" data-s="120" aria-pressed="false">2 min</button>
+    <button type="button" class="chip" data-s="180" aria-pressed="false">3 min</button>
+  </div>
+</section>
+
 <!-- Editor -->
 <dialog id="editor" aria-labelledby="edTitle">
   <form id="edForm" autocomplete="off">
@@ -85,8 +113,8 @@
 
       <div class="field">
         <span class="label">Exercícios</span>
-        <div class="ex-head" aria-hidden="true"><span>Exercício</span><span>Séries</span><span>Reps</span><span></span></div>
         <div id="edRows" class="ed-rows"></div>
+        <datalist id="exNames"></datalist>
         <button type="button" id="edAdd" class="btn ghost">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
           Adicionar exercício
@@ -109,6 +137,18 @@
     </button>
   </div>
   <div class="sheet-body menu-list">
+    <button type="button" class="menu-item toggle" data-set="auto" role="switch" aria-checked="true">
+      <span><b>Descanso automático</b><small>Inicia o timer ao concluir um exercício</small></span>
+      <i class="sw" aria-hidden="true"></i>
+    </button>
+    <button type="button" class="menu-item toggle" data-set="sound" role="switch" aria-checked="true">
+      <span><b>Som ao terminar</b><small>Toca um aviso além da vibração</small></span>
+      <i class="sw" aria-hidden="true"></i>
+    </button>
+    <button type="button" class="menu-item toggle" data-set="awake" role="switch" aria-checked="false">
+      <span><b>Manter tela acesa</b><small>Evita o bloqueio enquanto o app está aberto</small></span>
+      <i class="sw" aria-hidden="true"></i>
+    </button>
     <button type="button" id="mnReset" class="menu-item">
       <b>Limpar marcações</b>
       <small>Desmarca todos os exercícios concluídos</small>
